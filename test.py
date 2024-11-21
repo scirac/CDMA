@@ -46,8 +46,8 @@ def test_beampattern(cma, bf):
 def test_enhance(
     cdma    : CDMA,
 ):
-    s1_clean, fs = sf.read('/home/zhy/Data/dataset/thchs30/data_thchs30/train/C8_749.wav')
-    s2_clean, _  = sf.read('/home/zhy/Data/dataset/thchs30/data_thchs30/train/C7_545.wav')
+    s1_clean, fs = sf.read('wav_files/C8_749.wav')
+    s2_clean, _  = sf.read('wav_files/C7_545.wav')
     T         = min(s1_clean.size, s2_clean.size)
 
     rt60      = 0.2
@@ -96,10 +96,12 @@ def test_enhance(
     plt.title('Enhanced signal-1')
     plt.tight_layout()
     plt.savefig('enhanced')
+    plt.show()
 
 if __name__ == '__main__':
     sa      = 180
-    cma     = circular_microphone_arrays(M=4, f_bin=129, r=1, fs=16000)
+    #实测M不等于4有bug---by Howard
+    cma     = circular_microphone_arrays(M=7, f_bin=129, r=1, fs=16000)
 
     cdma    = CDMA(cma, sa=sa, null_list=[sa + 72, sa + 144])
     test_beampattern(cma, cdma)

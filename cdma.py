@@ -15,7 +15,7 @@ class circular_microphone_arrays():
         r       : float     = 1.0,      # r         : radius of array (cm)
         M       : int       = 4,        # M         : number of microphones
         fs      : int       = 8000,     # fs        : sample rate
-        f_bin   : int       = 256,      # f_bin     : number of freq bins
+        f_bin   : int       = 129,      # f_bin     : number of freq bins = fs/2 + 1
         sa_bin  : int       = 360,      # sa_bin    : number of steer angle
     ) -> None:
         self.r        = r / 100.        # cm -> m
@@ -59,9 +59,9 @@ class circular_microphone_arrays():
     ) -> np.ndarray:
         sa       = sa + 360 if sa < 0 else sa
         deg_cand = np.array([v * 360 / M for v in range(M)])
-        tgt_dir  = np.argmin(np.abs(deg_cand - sa))
+        tgt_dir  = np.argmin(np.abs(deg_cand - sa))  #计算最接近的候选角度？但是在接近360的时候是否准确？--by Howard
 
-        _sy = np.zeros((M // 2 - 1, M + 1), dtype=np.float)
+        _sy = np.zeros((M // 2 - 1, M + 1), dtype=float)
         for i in range(1, M // 2):
             _sy[i - 1, i], _sy[i - 1, M - i] = 1., -1.
         _sy_r = np.concatenate((np.roll(_sy[:, :-1], shift=tgt_dir, axis=1), _sy[:, [-1]]), axis=1)
@@ -162,7 +162,7 @@ class CDMA(FixedBeamformor):
         if self.b is not None:
             _b  = self.null_b[:, None, None].repeat(_eq.shape[-1], axis=-1)
 
-        _sy = self.sym[..., None].repeat(self.cma.f_bin, axis=-1).astype(np.float)
+        _sy = self.sym[..., None].repeat(self.cma.f_bin, axis=-1).astype(float)
         _eq = np.concatenate((_eq, _sy[..., :-1, :]), axis=0)  # [N x M x f_bin], N : number of constrains
         _b  = np.concatenate((_b, _sy[..., [-1], :]), axis=0)  # [N x 1 x f_bin], N : number of constrains
 
