@@ -101,7 +101,7 @@ def test_enhance(
 if __name__ == '__main__':
     sa      = 180
     #实测M不等于4有bug---by Howard
-    cma     = circular_microphone_arrays(M=7, f_bin=129, r=1, fs=16000)
+    cma     = circular_microphone_arrays(M=4, f_bin=129, r=5, fs=16000)
 
     cdma    = CDMA(cma, sa=sa, null_list=[sa + 72, sa + 144])
     test_beampattern(cma, cdma)
@@ -109,6 +109,7 @@ if __name__ == '__main__':
 
     # ds      = DS(cma, sa=sa)
     # test_beampattern(cma, ds)
+    # test_enhance(ds)
 
     # sd      = RSD(cma, sa=sa, mode='sphere', eps=.0)
     # test_beampattern(cma, sd)
